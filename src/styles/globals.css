@@ -1,0 +1,263 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* 60% DOMINAN LATAR BELAKANG: #FAF8F5 */
+    --background: 36 33% 97%;
+    --card: 0 11% 22%;
+    --popover: 0 0% 100%;
+
+    /* 30% SEKUNDER & TEKS: #3E3232 (Cokelat Espresso Tua) */
+    --foreground: 0 11% 22%;
+    --card-foreground: 36 33% 97%;
+    --popover-foreground: 0 11% 22%;
+
+    /* Sekunder Krem Terang: #F4EAE0 */
+    --secondary: 30 48% 92%;
+    --secondary-foreground: 0 11% 22%;
+
+    /* Muted (Cokelat Halus) */
+    --muted: 30 25% 93%;
+    --muted-foreground: 20 12% 40%;
+
+    /* Garis & Input */
+    --border: 30 18% 86%;
+    --input: 30 18% 86%;
+
+    /* 10% AKSEN & TOMBOL AKSI UTAMA: */
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --ring: 24 95% 53%;
+
+    /* Status Semantik */
+    --accent: 152 55% 38%; /* Hijau Daun (Sukses, Lunas) */
+    --accent-foreground: 0 0% 100%;
+    --warning: 38 92% 50%; /* Kuning Karamel (Menunggu, Stok Tipis) */
+    --warning-foreground: 0 11% 22%;
+    --destructive: 4 72% 50%; /* Merah Bata (Batal, Gagal) */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border Radius Scale */
+    --radius: 0.75rem;
+
+    /* Sidebar Owner (Espresso Pekat #2C2222 dengan Aksen Oranye Karamel) */
+    --sidebar-background: 0 12% 16%;
+    --sidebar-foreground: 36 33% 97%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 11% 23%;
+    --sidebar-accent-foreground: 36 33% 97%;
+    --sidebar-border: 0 10% 20%;
+    --sidebar-ring: 24 95% 53%;
+  }
+
+  .dark {
+    --background: 0 12% 12%;
+    --foreground: 36 33% 95%;
+    --card: 0 11% 16%;
+    --card-foreground: 36 33% 95%;
+    --popover: 0 11% 16%;
+    --popover-foreground: 36 33% 95%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 11% 20%;
+    --secondary-foreground: 30 48% 92%;
+    --muted: 0 11% 18%;
+    --muted-foreground: 30 20% 65%;
+    --accent: 152 55% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 4 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 38 85% 55%;
+    --warning-foreground: 0 11% 15%;
+    --border: 0 11% 22%;
+    --input: 0 11% 22%;
+    --ring: 24 95% 53%;
+    --sidebar-background: 0 12% 10%;
+    --sidebar-foreground: 36 33% 95%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 11% 16%;
+    --sidebar-accent-foreground: 36 33% 95%;
+    --sidebar-border: 0 11% 15%;
+    --sidebar-ring: 24 95% 53%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Inter", system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+  }
+
+  /* Tabular numbers for monetary values */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Interactive cursor */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a[href],
+  label[for],
+  select:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role="button"]:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Smooth scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 4px;
+  }
+}
+
+/* Print styles for receipt */
+@media print {
+  @page {
+    margin: 0;
+    padding: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-print,
+  .receipt-print * {
+    visibility: visible;
+  }
+
+  .receipt-print {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 58mm;
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    line-height: 1.3;
+    color: #000;
+    background: #fff;
+  }
+
+  .receipt-print.wide {
+    width: 80mm;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Pulse animation for barcode scan indicator */
+@keyframes scan-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.scan-pulse {
+  animation: scan-pulse 1.5s ease-in-out infinite;
+}
+
+/* Number counter animation */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.count-animate {
+  animation: count-up 300ms ease-out;
+}
+
+/* Cart item pop animation */
+@keyframes item-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.item-pop {
+  animation: item-pop 200ms ease-out;
+}
