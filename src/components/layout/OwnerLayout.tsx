@@ -347,13 +347,6 @@ export const OwnerLayout: React.FC = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => navigate("/kasir")}
-                  className="cursor-pointer"
-                >
-                  <ShoppingBag className="h-4 w-4 mr-2 text-primary" />
-                  Buka Layar Kasir
-                </DropdownMenuItem>
-                <DropdownMenuItem
                   onClick={() => navigate("/akun")}
                   className="cursor-pointer"
                 >
