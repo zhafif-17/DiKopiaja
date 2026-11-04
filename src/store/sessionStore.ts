@@ -19,13 +19,15 @@ export const useSessionStore = create<SessionState>()(
       activeShiftId: null,
       isAuthenticated: false,
 
-      login: async (email: string, _password: string) => {
+      login: async (email: string, password: string) => {
         // Mock login: cari user berdasarkan email
         await new Promise((r) => setTimeout(r, 600)); // simulate latency
         const user = MOCK_USERS.find(
           (u) => u.email.toLowerCase() === email.toLowerCase()
         );
-        if (user) {
+        
+        // Validasi password untuk akun demo
+        if (user && password === 'password123') {
           set({ currentUser: user, isAuthenticated: true });
           // Set mock shift aktif untuk kasir
           if (user.role === 'kasir') {

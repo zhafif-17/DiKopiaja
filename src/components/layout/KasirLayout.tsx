@@ -70,39 +70,22 @@ export const KasirLayout: React.FC = () => {
             <div className="hidden sm:block">
               <div className="font-heading font-bold text-sm leading-tight text-foreground flex items-center gap-1.5">
                 <span>DiKopiaja</span>
-                {currentUser?.role === "owner" && (
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] py-0 px-1.5 font-normal"
-                  >
-                    Owner
-                  </Badge>
-                )}
-              </div>
-              <div className="text-[11px] text-muted-foreground font-medium">
-                {MOCK_STORE.name}
               </div>
             </div>
           </div>
-
-          {/* Tombol Eksplisit Kembali ke Dashboard untuk Owner */}
-          {currentUser?.role === "owner" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/dashboard")}
-              className="flex items-center space-x-1.5 h-8 px-2.5 text-xs font-semibold border-border hover:border-primary/50 text-foreground hover:bg-secondary transition-colors ml-1 sm:ml-2"
-              title="Kembali ke Dashboard Utama Owner"
-            >
-              <LayoutDashboard className="h-3.5 w-3.5 text-primary" />
-              <span className="hidden md:inline">Dashboard Utama</span>
-              <span className="md:hidden">Dashboard</span>
-            </Button>
-          )}
         </div>
 
         {/* Center: Shift & Device Status Badges */}
         <div className="hidden lg:flex items-center space-x-2">
+          {currentUser?.role === "owner" && (
+            <Badge
+              variant="secondary"
+              className="text-[10px] py-1 px-2 font-bold"
+            >
+              Owner
+            </Badge>
+          )}
+
           {activeShiftId ? (
             <Badge variant="success" className="gap-1.5 py-1 px-2.5">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -142,9 +125,9 @@ export const KasirLayout: React.FC = () => {
             to="/kasir"
             end
             className={({ isActive }) =>
-              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-md font-semibold"
                   : "text-card-foreground hover:bg-card-foreground/10"
               }`
             }
@@ -156,9 +139,9 @@ export const KasirLayout: React.FC = () => {
           <NavLink
             to="/kasir/shift"
             className={({ isActive }) =>
-              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-md font-semibold"
                   : "text-card-foreground hover:bg-card-foreground/10"
               }`
             }
@@ -170,9 +153,9 @@ export const KasirLayout: React.FC = () => {
           <NavLink
             to="/kasir/riwayat"
             className={({ isActive }) =>
-              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              `flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-md font-semibold"
                   : "text-card-foreground hover:bg-card-foreground/10"
               }`
             }
@@ -203,10 +186,10 @@ export const KasirLayout: React.FC = () => {
                 variant="ghost"
                 className="flex items-center space-x-2 h-9 px-2"
               >
-                <div className="h-7 w-7 rounded-full bg-secondary text-primary font-bold text-xs flex items-center justify-center border border-border">
+                <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center shadow-sm border border-primary/40">
                   {currentUser?.name.charAt(0) || "K"}
                 </div>
-                <span className="text-xs font-semibold hidden md:inline-block max-w-25 truncate text-foreground">
+                <span className="text-xs font-semibold hidden md:inline-block max-w-[120px] truncate text-foreground">
                   {currentUser?.name || "Kasir"}
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />

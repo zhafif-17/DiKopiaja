@@ -41,10 +41,7 @@ export const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "zhafif@kuyngopi.id",
-      password: "password123",
-    },
+    defaultValues: { },
   });
 
   const onSubmit = async (data: LoginFormValues) => {
@@ -171,6 +168,9 @@ export const LoginPage: React.FC = () => {
               </div>
             </button>
           </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            *Password : <span className="font-mono font-semibold text-foreground">password123</span>
+          </p>
         </div>
       </CardContent>
       <CardFooter className="flex justify-center border-t border-border pt-4 text-xs text-muted-foreground">

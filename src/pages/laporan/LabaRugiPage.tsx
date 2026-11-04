@@ -200,6 +200,15 @@ export const LabaRugiPage: React.FC = () => {
                     borderColor: 'hsl(var(--border))',
                     borderRadius: '0.75rem',
                     fontSize: '12px',
+                    color: 'hsl(var(--foreground))',
+                  }}
+                  itemStyle={{
+                    color: '#ea580c',
+                    fontWeight: 'bold',
+                  }}
+                  labelStyle={{
+                    color: 'hsl(var(--foreground))',
+                    fontWeight: '600',
                   }}
                 />
                 <Bar dataKey="total" fill="hsl(25, 70%, 38%)" radius={[4, 4, 0, 0]} />

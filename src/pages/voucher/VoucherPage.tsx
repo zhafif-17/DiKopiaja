@@ -9,7 +9,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { MOCK_VOUCHERS, type Voucher, type VoucherType } from '@/mocks/vouchers';
-import { formatRupiah, formatDate } from '@/lib/utils';
+import { formatRupiah, formatDate, cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -237,6 +237,7 @@ export const VoucherPage: React.FC = () => {
                     <Switch
                       checked={v.isActive}
                       onCheckedChange={() => handleToggleVoucher(v.id)}
+                      className={!v.isActive ? "data-[state=unchecked]:bg-red-500" : ""}
                     />
                   </TableCell>
                 </TableRow>

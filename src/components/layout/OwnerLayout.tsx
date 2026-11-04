@@ -194,7 +194,7 @@ export const OwnerLayout: React.FC = () => {
       {/* Desktop Fixed Sidebar (Cokelat Espresso Tua #2C2222) */}
       <aside className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 border-r border-sidebar-border z-30" style={{ backgroundColor: '#4B382A', color: '#F5E6D3' }}>
         {/* Sidebar Brand Header */}
-        <div className="h-16 px-5 border-b border-sidebar-border flex items-center space-x-3">
+        <div className="h-16 px-5 border-b border-sidebar-border/30 flex items-center space-x-3">
           <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-xs">
             <Coffee className="h-6 w-6" />
           </div>
@@ -214,7 +214,7 @@ export const OwnerLayout: React.FC = () => {
         </div>
 
         {/* Store badge & User Footer */}
-        <div className="p-3 border-t border-sidebar-border bg-sidebar-accent/40">
+        <div className="p-3 border-t border-sidebar-border/30 bg-sidebar-accent/40">
           <div className="text-xs text-sidebar-foreground/70 mb-2 px-2 flex justify-between items-center">
             <span className="font-medium text-sidebar-foreground truncate max-w-[140px]">
               {MOCK_STORE.name}
@@ -244,15 +244,15 @@ export const OwnerLayout: React.FC = () => {
           className="p-0 w-72 border-sidebar-border"
           style={{ backgroundColor: '#4B382A', color: '#F5E6D3' }}
         >
-          <SheetHeader className="h-16 px-5 border-b border-sidebar-border flex flex-row items-center space-x-3 text-left">
+          <SheetHeader className="h-16 px-5 border-b border-sidebar-border/30 flex flex-row items-center space-x-3 text-left">
             <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
               <Coffee className="h-5 w-5" />
             </div>
             <div>
-              <SheetTitle className="font-heading font-bold text-base text-sidebar-foreground">
+              <SheetTitle className="font-heading font-bold text-base" style={{ color: '#F5E6D3' }}>
                 DiKopiaja
               </SheetTitle>
-              <div className="text-xs text-sidebar-foreground/60">
+              <div className="text-xs" style={{ color: 'rgba(245, 230, 211, 0.6)' }}>
                 Owner Panel
               </div>
             </div>
@@ -283,17 +283,6 @@ export const OwnerLayout: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            {/* Direct Quick Button to Kasir */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/kasir")}
-              className="hidden sm:flex items-center space-x-1.5 h-9 px-3 text-xs font-semibold border-card-foreground/20 hover:border-primary text-card-foreground hover:text-primary hover:bg-card-foreground/10 transition-colors"
-            >
-              <ShoppingBag className="h-4 w-4 text-primary" />
-              <span>Buka Layar Kasir</span>
-            </Button>
-
             {/* Quick search input */}
             <div className="relative hidden md:block w-60">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-card-foreground/60" />
@@ -324,7 +313,7 @@ export const OwnerLayout: React.FC = () => {
                   variant="ghost"
                   className="flex items-center space-x-2 h-9 px-2 text-card-foreground hover:bg-card-foreground/10"
                 >
-                  <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs">
+                  <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-sm border border-primary/40">
                     {currentUser?.name.charAt(0) || "R"}
                   </div>
                   <span className="text-xs font-semibold hidden sm:inline max-w-[120px] truncate">

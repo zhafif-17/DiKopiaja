@@ -237,6 +237,15 @@ export const DashboardPage: React.FC = () => {
                       borderColor: 'hsl(var(--border))',
                       borderRadius: '0.75rem',
                       fontSize: '12px',
+                      color: 'hsl(var(--foreground))',
+                    }}
+                    itemStyle={{
+                      color: '#ea580c',
+                      fontWeight: 'bold',
+                    }}
+                    labelStyle={{
+                      color: 'hsl(var(--foreground))',
+                      fontWeight: '600',
                     }}
                   />
                   <Area

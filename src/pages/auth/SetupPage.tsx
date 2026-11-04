@@ -111,7 +111,7 @@ export const SetupPage: React.FC = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="owner@toko.id"
+                placeholder="owner@kuyngopis.id"
                 className="pl-9"
                 {...register("email")}
               />

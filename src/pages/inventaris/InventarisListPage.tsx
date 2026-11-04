@@ -82,8 +82,9 @@ export const InventarisListPage: React.FC = () => {
           </Button>
 
           <Button
+            variant="outline"
             onClick={() => navigate('/inventaris/baru')}
-            className="gap-2 text-xs font-bold shadow-sm"
+            className="gap-2 text-xs font-bold"
           >
             <Plus className="h-4 w-4" />
             Tambah Produk

@@ -145,7 +145,7 @@ export const TransaksiListPage: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Semua Kasir</SelectItem>
-                <SelectItem value="Dinda Lestari">Dinda Lestari</SelectItem>
+                <SelectItem value="Dewi Lestari">Dewi Lestari</SelectItem>
                 <SelectItem value="Bayu Saputra">Bayu Saputra</SelectItem>
               </SelectContent>
             </Select>

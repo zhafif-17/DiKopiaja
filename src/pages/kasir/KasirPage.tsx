@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import QRCode from "qrcode";
 import {
   Search,
   Barcode,
@@ -104,6 +105,18 @@ export const KasirPage: React.FC = () => {
   const [isProcessingNonCash, setIsProcessingNonCash] = useState(false);
   const [lastCompletedSale, setLastCompletedSale] =
     useState<ReceiptData | null>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
+
+  // Card payment states
+  const [cardFullName, setCardFullName] = useState<string>("");
+  const [cardNumber, setCardNumber] = useState<string>("");
+  const [cardExpMonth, setCardExpMonth] = useState<string>("");
+  const [cardExpYear, setCardExpYear] = useState<string>("");
+  const [cardCvc, setCardCvc] = useState<string>("");
+
+  // E-Wallet payment states
+  const [selectedEwallet, setSelectedEwallet] = useState<string>("");
+  const [ewalletPhone, setEwalletPhone] = useState<string>("");
 
   // Voucher input
   const [voucherInputCode, setVoucherInputCode] = useState("");
@@ -114,6 +127,87 @@ export const KasirPage: React.FC = () => {
   // Barcode scanner buffer detection
   const barcodeBuffer = useRef<string>("");
   const lastKeyTime = useRef<number>(0);
+
+  // Helper function untuk format card number
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+
+    if (parts.length) {
+      return parts.join(" ");
+    } else {
+      return value;
+    }
+  };
+
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatCardNumber(e.target.value);
+    if (formatted.replace(/\s/g, "").length <= 16) {
+      setCardNumber(formatted);
+    }
+  };
+
+  const handleCardExpMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= 12)) {
+      setCardExpMonth(value);
+    }
+  };
+
+  const handleCardExpYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length <= 4) {
+      setCardExpYear(value);
+    }
+  };
+
+  const handleCardCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length <= 5) {
+      setCardCvc(value);
+    }
+  };
+
+  const handleEwalletPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length <= 15) {
+      setEwalletPhone(value);
+    }
+  };
+
+  // Generate QR Code when QRIS payment method is selected
+  useEffect(() => {
+    if (paymentMethod === "qris" && paymentModalOpen && total > 0) {
+      const qrData = JSON.stringify({
+        merchant: "DiKopiaja",
+        amount: total,
+        currency: "IDR",
+        invoice: generateInvoiceNo(Math.floor(Math.random() * 10000)),
+        timestamp: new Date().toISOString(),
+      });
+      
+      QRCode.toDataURL(qrData, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: "#000000",
+          light: "#FFFFFF",
+        },
+      })
+        .then((url) => {
+          setQrCodeUrl(url);
+        })
+        .catch((err) => {
+          console.error("Error generating QR code:", err);
+        });
+    }
+  }, [paymentMethod, paymentModalOpen, total]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -284,6 +378,13 @@ export const KasirPage: React.FC = () => {
     }
     setPaymentMethod("tunai");
     setCashGiven(total);
+    setCardFullName("");
+    setCardNumber("");
+    setCardExpMonth("");
+    setCardExpYear("");
+    setCardCvc("");
+    setSelectedEwallet("");
+    setEwalletPhone("");
     setPaymentModalOpen(true);
   };
 
@@ -674,20 +775,28 @@ export const KasirPage: React.FC = () => {
         {/* Kategori Horizontal Scroll */}
         <div className="px-4 py-2 border-b border-border bg-card/60 flex items-center space-x-2 overflow-x-auto scrollbar-thin">
           <Button
-            variant={selectedCategory === null ? "default" : "outline"}
+            variant="outline"
             size="sm"
             onClick={() => setSelectedCategory(null)}
-            className="rounded-full text-xs shrink-0 h-8"
+            className={`rounded-full text-xs shrink-0 h-8 transition-colors ${
+              selectedCategory === null
+                ? "bg-[#84563c] text-white border-[#84563c] hover:bg-[#84563c]/90"
+                : "hover:bg-secondary/40"
+            }`}
           >
             Semua Menu
           </Button>
           {MOCK_CATEGORIES.map((cat) => (
             <Button
               key={cat.id}
-              variant={selectedCategory === cat.id ? "default" : "outline"}
+              variant="outline"
               size="sm"
               onClick={() => setSelectedCategory(cat.id)}
-              className="rounded-full text-xs shrink-0 h-8"
+              className={`rounded-full text-xs shrink-0 h-8 transition-colors ${
+                selectedCategory === cat.id
+                  ? "bg-[#84563c] text-white border-[#84563c] hover:bg-[#84563c]/90"
+                  : "hover:bg-secondary/40"
+              }`}
             >
               {cat.name}
             </Button>
@@ -971,7 +1080,7 @@ export const KasirPage: React.FC = () => {
               onClick={() => setPaymentMethod("tunai")}
               className={`p-3 rounded-xl border flex flex-col items-center space-y-1 text-center transition-all ${
                 paymentMethod === "tunai"
-                  ? "border-primary bg-primary/10 text-primary font-bold"
+                  ? "border-[#84563c] bg-[#84563c]/10 text-[#84563c] font-bold"
                   : "border-border hover:bg-secondary/40 text-muted-foreground"
               }`}
             >
@@ -984,7 +1093,7 @@ export const KasirPage: React.FC = () => {
               onClick={() => setPaymentMethod("qris")}
               className={`p-3 rounded-xl border flex flex-col items-center space-y-1 text-center transition-all ${
                 paymentMethod === "qris"
-                  ? "border-primary bg-primary/10 text-primary font-bold"
+                  ? "border-[#84563c] bg-[#84563c]/10 text-[#84563c] font-bold"
                   : "border-border hover:bg-secondary/40 text-muted-foreground"
               }`}
             >
@@ -997,7 +1106,7 @@ export const KasirPage: React.FC = () => {
               onClick={() => setPaymentMethod("kartu")}
               className={`p-3 rounded-xl border flex flex-col items-center space-y-1 text-center transition-all ${
                 paymentMethod === "kartu"
-                  ? "border-primary bg-primary/10 text-primary font-bold"
+                  ? "border-[#84563c] bg-[#84563c]/10 text-[#84563c] font-bold"
                   : "border-border hover:bg-secondary/40 text-muted-foreground"
               }`}
             >
@@ -1010,7 +1119,7 @@ export const KasirPage: React.FC = () => {
               onClick={() => setPaymentMethod("ewallet")}
               className={`p-3 rounded-xl border flex flex-col items-center space-y-1 text-center transition-all ${
                 paymentMethod === "ewallet"
-                  ? "border-primary bg-primary/10 text-primary font-bold"
+                  ? "border-[#84563c] bg-[#84563c]/10 text-[#84563c] font-bold"
                   : "border-border hover:bg-secondary/40 text-muted-foreground"
               }`}
             >
@@ -1093,23 +1202,247 @@ export const KasirPage: React.FC = () => {
                 </span>
               </div>
             </div>
-          ) : (
-            <div className="p-6 rounded-xl border border-border bg-secondary/20 flex flex-col items-center justify-center text-center space-y-3">
-              <div className="h-14 w-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                <QrCode className="h-8 w-8 animate-pulse" />
+          ) : paymentMethod === "qris" ? (
+            <div className="space-y-4 pt-2">
+              <div className="p-6 rounded-xl border-2 border-dashed border-primary/30 bg-white flex flex-col items-center justify-center text-center space-y-4">
+                {/* QR Code Real */}
+                <div className="p-3 bg-white rounded-lg shadow-lg border border-border">
+                  {qrCodeUrl ? (
+                    <img 
+                      src={qrCodeUrl} 
+                      alt="QR Code Payment" 
+                      className="w-64 h-64 object-contain"
+                    />
+                  ) : (
+                    <div className="w-64 h-64 flex items-center justify-center bg-gray-100 rounded">
+                      <QrCode className="h-16 w-16 text-gray-400 animate-pulse" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-base text-foreground">
+                    Scan QR Code untuk Pembayaran
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+                    Minta pelanggan untuk scan QR code menggunakan aplikasi pembayaran digital. Total:{" "}
+                    <strong className="text-foreground">
+                      {formatRupiah(total)}
+                    </strong>
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+                  <span>Mendukung:</span>
+                  <span className="font-semibold text-foreground">GoPay</span>
+                  <span>•</span>
+                  <span className="font-semibold text-foreground">OVO</span>
+                  <span>•</span>
+                  <span className="font-semibold text-foreground">DANA</span>
+                  <span>•</span>
+                  <span className="font-semibold text-foreground">ShopeePay</span>
+                </div>
               </div>
-              <div>
-                <h4 className="font-heading font-bold text-base text-foreground">
-                  Simulasi Pembayaran Non-Tunai
-                </h4>
-                <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-                  Sistem akan membuat token Snap dan membuka pembayaran untuk
-                  pelanggan sebesar{" "}
-                  <strong className="text-foreground">
+            </div>
+          ) : paymentMethod === "kartu" ? (
+            <div className="space-y-4 pt-2">
+              <div className="space-y-4">
+                {/* Full Name */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">
+                    Full Name
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="John Doe"
+                    className="text-sm"
+                    value={cardFullName}
+                    onChange={(e) => setCardFullName(e.target.value.toUpperCase())}
+                  />
+                </div>
+
+                {/* Card Number */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center justify-between">
+                    <span>Card Number</span>
+                    <div className="flex items-center gap-2">
+                      <img src="/Logo-Visa.png" alt="Visa" className="h-5 object-contain" />
+                      <img src="/Logo-Mastercard.png" alt="Mastercard" className="h-5 object-contain" />
+                      <img src="/Logo-JCB.png" alt="JCB" className="h-5 object-contain" />
+                    </div>
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="1234 1234 1234 1234"
+                    className="text-base font-mono tracking-wider"
+                    value={cardNumber}
+                    onChange={handleCardNumberChange}
+                    maxLength={19}
+                  />
+                </div>
+
+                {/* Expiration Date & CVC */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-muted-foreground">
+                      Expiration Date
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="text"
+                        placeholder="MM"
+                        className="text-sm text-center"
+                        value={cardExpMonth}
+                        onChange={handleCardExpMonthChange}
+                        maxLength={2}
+                      />
+                      <span className="text-muted-foreground">/</span>
+                      <Input
+                        type="text"
+                        placeholder="YYYY"
+                        className="text-sm text-center"
+                        value={cardExpYear}
+                        onChange={handleCardExpYearChange}
+                        maxLength={4}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-muted-foreground">
+                      Security Code (CVC)
+                    </label>
+                    <Input
+                      type="password"
+                      placeholder="123"
+                      className="text-sm text-center font-mono"
+                      value={cardCvc}
+                      onChange={handleCardCvcChange}
+                      maxLength={5}
+                    />
+                  </div>
+                </div>
+
+                {/* Total Amount Display */}
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex justify-between items-center">
+                  <span className="font-semibold text-sm text-foreground">
+                    Total Pembayaran:
+                  </span>
+                  <span className="font-heading font-extrabold text-xl tabular-nums text-primary">
                     {formatRupiah(total)}
-                  </strong>
-                  .
-                </p>
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4 pt-2">
+              <div className="space-y-4">
+                {/* E-Wallet Selection */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-muted-foreground">
+                    Pilih E-Wallet
+                  </label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {/* GoPay */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEwallet("gopay")}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center space-y-2 transition-all ${
+                        selectedEwallet === "gopay"
+                          ? "border-[#00AA13] bg-[#00AA13]/10 shadow-md ring-2 ring-[#00AA13]/20"
+                          : "border-border hover:border-[#00AA13]/50 hover:bg-secondary/40"
+                      }`}
+                    >
+                      <img 
+                        src="/Logo-Gopay.png" 
+                        alt="GoPay" 
+                        className="h-8 object-contain"
+                      />
+                      <span className="text-xs font-semibold text-foreground">GoPay</span>
+                    </button>
+
+                    {/* DANA */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEwallet("dana")}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center space-y-2 transition-all ${
+                        selectedEwallet === "dana"
+                          ? "border-[#118EEA] bg-[#118EEA]/10 shadow-md ring-2 ring-[#118EEA]/20"
+                          : "border-border hover:border-[#118EEA]/50 hover:bg-secondary/40"
+                      }`}
+                    >
+                      <img 
+                        src="/Logo-Dana.png" 
+                        alt="DANA" 
+                        className="h-8 object-contain"
+                      />
+                      <span className="text-xs font-semibold text-foreground">DANA</span>
+                    </button>
+
+                    {/* ShopeePay */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEwallet("shopeepay")}
+                      className={`p-4 rounded-xl border-2 flex flex-col items-center space-y-2 transition-all ${
+                        selectedEwallet === "shopeepay"
+                          ? "border-[#EE4D2D] bg-[#EE4D2D]/10 shadow-md ring-2 ring-[#EE4D2D]/20"
+                          : "border-border hover:border-[#EE4D2D]/50 hover:bg-secondary/40"
+                      }`}
+                    >
+                      <img 
+                        src="/Logo-Shopeepay.png" 
+                        alt="ShopeePay" 
+                        className="h-8 object-contain"
+                      />
+                      <span className="text-xs font-semibold text-foreground">ShopeePay</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Phone Number Input */}
+                {selectedEwallet && (
+                  <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="text-xs font-semibold text-muted-foreground">
+                      Nomor Telepon
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
+                        +62
+                      </span>
+                      <Input
+                        type="tel"
+                        placeholder="812 3456 7890"
+                        className="pl-12 text-base font-mono"
+                        value={ewalletPhone}
+                        onChange={handleEwalletPhoneChange}
+                        maxLength={15}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Masukkan nomor telepon yang terdaftar di {selectedEwallet === "gopay" ? "GoPay" : selectedEwallet === "dana" ? "DANA" : "ShopeePay"}
+                    </p>
+                  </div>
+                )}
+
+                {/* Total Amount Display */}
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 flex justify-between items-center">
+                  <span className="font-semibold text-sm text-foreground">
+                    Total Pembayaran:
+                  </span>
+                  <span className="font-heading font-extrabold text-xl tabular-nums text-primary">
+                    {formatRupiah(total)}
+                  </span>
+                </div>
+
+                {/* Info Payment */}
+                {selectedEwallet && (
+                  <div className="p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-800 text-xs">
+                    <p className="font-semibold mb-1">ℹ️ Cara Pembayaran:</p>
+                    <ol className="list-decimal list-inside space-y-1 text-[11px]">
+                      <li>Pelanggan akan menerima notifikasi pembayaran di aplikasi</li>
+                      <li>Buka aplikasi dan konfirmasi pembayaran</li>
+                      <li>Masukkan PIN untuk menyelesaikan transaksi</li>
+                    </ol>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1127,7 +1460,21 @@ export const KasirPage: React.FC = () => {
               onClick={handleProcessPayment}
               disabled={
                 isProcessingNonCash ||
-                (paymentMethod === "tunai" && cashGiven < total)
+                (paymentMethod === "tunai" && cashGiven < total) ||
+                (paymentMethod === "kartu" && (
+                  !cardFullName.trim() ||
+                  cardNumber.replace(/\s/g, "").length < 13 ||
+                  !cardExpMonth ||
+                  !cardExpYear ||
+                  cardExpYear.length < 4 ||
+                  !cardCvc ||
+                  cardCvc.length < 3
+                )) ||
+                (paymentMethod === "ewallet" && (
+                  !selectedEwallet ||
+                  !ewalletPhone ||
+                  ewalletPhone.length < 9
+                ))
               }
             >
               {isProcessingNonCash ? (

@@ -70,6 +70,53 @@ export const ProdukFormPage: React.FC = () => {
   const [selectedCat, setSelectedCat] = useState<number>(
     existingProduct ? existingProduct.categoryId : 1
   );
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validasi ukuran file (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: 'File Terlalu Besar',
+          description: 'Ukuran file maksimal 2MB',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Validasi tipe file
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: 'Format File Tidak Valid',
+          description: 'Hanya menerima file gambar (JPG, PNG, WebP)',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      toast({
+        title: 'Gambar Dipilih',
+        description: `File ${file.name} berhasil dipilih`,
+        variant: 'success',
+      });
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const {
     register,
@@ -292,17 +339,45 @@ export const ProdukFormPage: React.FC = () => {
               <Switch checked={allowNegative} onCheckedChange={setAllowNegative} />
             </div>
 
-            {/* Upload Area Mock */}
+            {/* Upload Area */}
             <div className="pt-3 border-t border-border space-y-1.5">
               <Label>Foto Menu Produk (Maks 2MB)</Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:bg-secondary/20 cursor-pointer transition-colors">
-                <UploadCloud className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                <span className="text-xs font-semibold text-foreground block">
-                  Klik untuk unggah atau seret file gambar ke sini
-                </span>
-                <span className="text-[10px] text-muted-foreground">
-                  Mendukung format JPG, PNG, atau WebP (akan dikompresi otomatis)
-                </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <div 
+                onClick={handleUploadClick}
+                className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:bg-secondary/20 hover:border-primary/50 cursor-pointer transition-all"
+              >
+                {imagePreview ? (
+                  <div className="space-y-2">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      className="max-h-40 mx-auto rounded-lg object-cover"
+                    />
+                    <span className="text-xs font-semibold text-foreground block">
+                      {selectedImage?.name}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground block">
+                      Klik untuk mengganti gambar
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                    <span className="text-xs font-semibold text-foreground block">
+                      Klik untuk unggah atau seret file gambar ke sini
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">
+                      Mendukung format JPG, PNG, atau WebP (akan dikompresi otomatis)
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
