@@ -5,4 +5,3 @@ node_modules
 # Editor directories and files
 .vscode/*
 dist
-vercel.json
