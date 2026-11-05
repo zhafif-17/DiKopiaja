@@ -1,32 +1,77 @@
-# React + TypeScript + Vite
+# DiKopiaja
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+**Sistem Kasir (Point of Sale).**
 
-Currently, two official plugins are available:
+<div data-importer="techs" align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="45" alt="html5 logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=ts" height="60" alt="typescript logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=js" height="60" alt="javascript logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" height="46" alt="react logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=vite" height="60" alt="vite logo"  />
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=tailwind" height="60" alt="tailwindcss logo"  />
+</div>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
+## 🚀 Main Technologies
 
-## React Compiler
+| Kategori | Teknologi |
+| --- | --- |
+| **Bahasa** | TypeScript (JavaScript), HTML, CSS |
+| **Framework / Library** | React 18, React Router 7 |
+| **Build Tool** | Vite |
+| **Styling** | Tailwind CSS 4, shadcn/ui (Radix UI), class-variance-authority |
+| **State & Data** | Zustand, TanStack Query |
+| **Form & Validasi** | React Hook Form, Zod |
+| **Visualisasi** | Recharts, Lucide React |
+| **Lainnya** | date-fns, qrcode, React Helmet Async |
+| **Linter** | Oxlint |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the Oxlint configuration
+## ✨ Fitur Utama
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+- **Kasir**: transaksi cepat dengan keranjang, voucher, dan pratinjau struk
+- **Manajemen Shift**: buka/tutup shift beserta riwayatnya
+- **Inventaris**: produk, kategori, dan stok masuk
+- **Pelanggan & Poin**: program loyalitas dan riwayat pelanggan
+- **Voucher**: kelola promo dan diskon
+- **Laporan**: dashboard penjualan, laba rugi, dan pencatatan biaya
+- **Pembayaran Digital**: GoPay, DANA, ShopeePay, Visa, Mastercard, dan JCB
+- **Role-based Access**: hak akses berbeda untuk *Owner* dan *Kasir*
+- **Pengaturan**: toko, pengguna, poin, dan printer
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+---
+
+## 📸 Dokumentasi
+
+### Menu Login
+![Halaman Login](docs/sreenshot-1.png)
+ 
+### Dashboard Owner
+![Dashboard Owner](docs/screenshot-2.png)
+ 
+### Halaman Kasir
+![Halaman Kasir](docs/screenshot-3.png)
+
+---
+
+## 📁 Struktur Folder
+
+```
+src/
+├── components/   # Komponen UI & layout
+├── pages/        # Halaman (kasir, dashboard, inventaris, dll.)
+├── router/       # Routing & proteksi akses
+├── store/        # Global state (Zustand)
+├── mocks/        # Data dummy
+└── lib/          # Utilitas
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+Created by **Muhammad Zhafif**
